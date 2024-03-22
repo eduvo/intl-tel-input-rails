@@ -1,5 +1,5 @@
 /*
- * International Telephone Input v20.0.5
+ * International Telephone Input v20.0.4
  * https://github.com/jackocnr/intl-tel-input.git
  * Licensed under the MIT license
  */
@@ -494,7 +494,6 @@
                     this.selectedFlag = this._createEl("div", _objectSpread({
                         "class": "iti__selected-flag"
                     }, allowDropdown && _objectSpread({
-                        role: "button",
                         "aria-expanded": "false",
                         "aria-label": this.options.i18n.selectedCountryAriaLabel || "Selected country",
                         "aria-haspopup": countrySearch ? "true" : "listbox",
@@ -1780,7 +1779,7 @@
     // default options
     intlTelInputGlobals.defaults = defaults;
     // version
-    intlTelInputGlobals.version = "20.0.5";
+    intlTelInputGlobals.version = "20.0.4";
     var pluginName = "intlTelInput";
     // A really lightweight plugin wrapper around the constructor,
     // preventing against multiple instantiations
