@@ -1,5 +1,5 @@
 /*
- * International Telephone Input v23.7.3
+ * International Telephone Input v23.8.0
  * https://github.com/jackocnr/intl-tel-input.git
  * Licensed under the MIT license
  */
@@ -2774,6 +2774,14 @@ var factoryOutput = (() => {
       this.options.placeholderNumberType = type;
       this._updatePlaceholder();
     }
+    setDisabled(disabled) {
+      this.telInput.disabled = disabled;
+      if (disabled) {
+        this.selectedCountry.setAttribute("disabled", "true");
+      } else {
+        this.selectedCountry.removeAttribute("disabled");
+      }
+    }
   };
   var loadUtils = (path) => {
     if (!intlTelInput.utils && !intlTelInput.startedLoadingUtilsScript) {
@@ -2781,6 +2789,7 @@ var factoryOutput = (() => {
       return new Promise((resolve, reject) => {
         import_INTENTIONALLY_BROKEN(
           /* webpackIgnore: true */
+          /* @vite-ignore */
           path
         ).then(({ default: utils2 }) => {
           intlTelInput.utils = utils2;
@@ -2816,7 +2825,7 @@ var factoryOutput = (() => {
       //* A map from instance ID to instance object.
       instances: {},
       loadUtils,
-      version: "23.7.3"
+      version: "23.8.0"
     }
   );
   var intl_tel_input_default = intlTelInput;
