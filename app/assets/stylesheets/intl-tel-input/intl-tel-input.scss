@@ -22,10 +22,10 @@
   --iti-arrow-color: #555;
 
   //* Image related variables.
-  --iti-path-flags-1x: url('intl-tel-input/flags.png?1');
-  --iti-path-flags-2x: url('intl-tel-input/flags@2x.png?1');
-  --iti-path-globe-1x: url('intl-tel-input/globe.png');
-  --iti-path-globe-2x: url('intl-tel-input/globe@2x.png');
+  --iti-path-flags-1x: url('intl-tel-input/flags.webp');
+  --iti-path-flags-2x: url('intl-tel-input/flags@2x.webp');
+  --iti-path-globe-1x: url('intl-tel-input/globe.webp');
+  --iti-path-globe-2x: url('intl-tel-input/globe@2x.webp');
 
   --iti-flag-sprite-width: #{map-get($flags-sprite-1x, width)};
   --iti-flag-sprite-height: #{map-get($flags-sprite-1x, height)};
