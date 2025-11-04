@@ -1,5 +1,5 @@
-@import "sass:map";
-@import "metadata";
+@use "sass:map";
+@use "metadata" as *;
 
 :root {
   //* rgba is needed for the selected country hover state to blend in with the border-highlighting some browsers give the input on focus.
