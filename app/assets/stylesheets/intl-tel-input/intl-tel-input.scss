@@ -28,8 +28,8 @@
   --iti-path-globe-1x: url('intl-tel-input/globe.png');
   --iti-path-globe-2x: url('intl-tel-input/globe@2x.png');
 
-  --iti-flag-sprite-width: #{map.get($flags-sprite-1x, width)};
-  --iti-flag-sprite-height: #{map.get($flags-sprite-1x, height)};
+  --iti-flag-sprite-width: #{map-get($flags-sprite-1x, width)};
+  --iti-flag-sprite-height: #{map-get($flags-sprite-1x, height)};
 
   //* Enough space for them to click off to close.
   --iti-mobile-popup-margin: 30px;
@@ -365,7 +365,7 @@
 }
 
 @each $country-code, $values in $flags {
-  $flag-offset: map.get($values, offset);
+  $flag-offset: map-get($values, offset);
 
   .iti__#{$country-code} {
     --iti-flag-offset: #{$flag-offset};
