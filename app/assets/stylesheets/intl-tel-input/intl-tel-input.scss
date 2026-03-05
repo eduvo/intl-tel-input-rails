@@ -4,28 +4,28 @@
   //* rgba is needed for the selected country hover state to blend in with the border-highlighting some browsers give the input on focus.
   --iti-hover-color: rgba(0, 0, 0, 0.05); //* Used as the bg color for both the selected country and the dropdown items, on hover.
   --iti-border-color: #ccc; //* Used for both the dropdown border, and the divider under the country search input.
-  --iti-dialcode-color: #999;
   --iti-dropdown-bg: white;
-  //* Colour for the decorative magnifying glass icon in the country search input.
-  --iti-search-icon-color: #999;
+  //* icons include: arrow icon, globe icon (selected country empty state), search magnifying glass icon, search clear icon
+  --iti-icon-color: #555;
 
   --iti-spacer-horizontal: 8px;
   --iti-flag-height: #{$flag-height};
   --iti-flag-width: #{$flag-width};
+  //* Separate height for the globe icon, as it's much thinner than the flags, so nice to have it a bit taller. This is also re-used for the search icon.
+  --iti-globe-height: 16px;
+  //* Separate height for the search clear icon, which looks too big if it's the same as the others.
+  --iti-search-clear-icon-height: 13px;
   //* This border width is used for the popup and divider, but it is also assumed to be the border width of the input, which we do not control.
   --iti-border-width: 1px;
-
+  //* Arrow height must be an even number as it gets halved when calculating arrow width
   --iti-arrow-height: 4px;
-  --iti-arrow-width: 6px;
+  --iti-arrow-width: calc((var(--iti-arrow-height) / 2) * 3);
   --iti-triangle-border: calc(var(--iti-arrow-width) / 2);
   --iti-arrow-padding: 6px;
-  --iti-arrow-color: #555;
 
   //* Image related variables.
   --iti-path-flags-1x: url('intl-tel-input/flags.webp');
   --iti-path-flags-2x: url('intl-tel-input/flags@2x.webp');
-  --iti-path-globe-1x: url('intl-tel-input/globe.webp');
-  --iti-path-globe-2x: url('intl-tel-input/globe@2x.webp');
 
   --iti-flag-sprite-width: #{map-get($flags-sprite-1x, width)};
   --iti-flag-sprite-height: #{map-get($flags-sprite-1x, height)};
@@ -117,11 +117,11 @@
     height: 0;
     border-left: var(--iti-triangle-border) solid transparent;
     border-right: var(--iti-triangle-border) solid transparent;
-    border-top: var(--iti-arrow-height) solid var(--iti-arrow-color);
+    border-top: var(--iti-arrow-height) solid var(--iti-icon-color);
 
     &--up {
       border-top: none;
-      border-bottom: var(--iti-arrow-height) solid var(--iti-arrow-color);
+      border-bottom: var(--iti-arrow-height) solid var(--iti-icon-color);
     }
   }
 
@@ -131,18 +131,15 @@
     background-color: var(--iti-dropdown-bg);
 
     .iti--inline-dropdown & {
+      border: var(--iti-border-width) solid var(--iti-border-color);
+      box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
+    }
+    // Note: dont apply these styles when using dropdownContainer, as that uses pos:fixed and so this (child) doesn't need pos:absolute
+    .iti--inline-dropdown:not(.iti--container) & {
       position: absolute;
       //* Popup so render above everything else.
       z-index: 2;
-
-      //* Since (sometimes) adding a search input in the dropdown, better to make the dropdown look a bit more distinct from the tel input, to reduce confusion between the two inputs.
-      margin-top: 3px;
-
-      //* margin-left to compensate for the padding on the parent.
-      margin-left: calc(var(--iti-border-width) * -1);
-
-      border: var(--iti-border-width) solid var(--iti-border-color);
-      box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
+      left: 0;
     }
   }
   &__search-input {
@@ -159,19 +156,22 @@
       background-position: right 8px center;
     }
 
-    & + .iti__country-list {
-      border-top: 1px solid var(--iti-border-color);
-    }
-
     // hide chrome/safari's native clear button for inputs with type=search
     &::-webkit-search-cancel-button {
       appearance: none;
     }
   }
+  // give the search input the same v-padding as the country items, for visual consistency
+  &__search-input,
+  &__country {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
   &__search-input-wrapper {
     position: relative;
     display: flex;
     align-items: center;
+    border-bottom: 1px solid var(--iti-border-color);
   }
   &__search-icon {
     position: absolute;
@@ -184,7 +184,10 @@
     right: 8px;
   }
   &__search-icon-svg {
-    stroke: var(--iti-search-icon-color);
+    width: var(--iti-globe-height);
+    height: var(--iti-globe-height);
+    display: block;
+    stroke: var(--iti-icon-color);
     fill: none;
     stroke-width: 3;
   }
@@ -195,20 +198,23 @@
     border: 0;
     border-radius: 3px; // nice on hover state
     cursor: pointer;
-    padding: 4px;
+    padding: 5px;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: background-color 0.15s ease;
-    width: 24px;
-    height: 24px;
 
     .iti__search-clear-x {
       stroke-width: 2;
     }
     .iti__search-clear-bg {
-      fill: var(--iti-search-icon-color);
+      fill: var(--iti-icon-color);
     }
+  }
+  &__search-clear-svg {
+    width: var(--iti-search-clear-icon-height);
+    height: var(--iti-search-clear-icon-height);
+    display: block;
   }
   [dir="rtl"] &__search-clear {
     right: auto;
@@ -255,27 +261,45 @@
     //* Note: decided not to use line-height here for alignment because it causes issues e.g. large font-sizes will overlap, and also looks bad if one country overflows onto 2 lines.
     display: flex;
     align-items: center;
-    padding: 8px var(--iti-spacer-horizontal);
+    padding-left: var(--iti-spacer-horizontal);
+    padding-right: var(--iti-spacer-horizontal);
     outline: none;
   }
-
-  //* The grey dial codes, displayed after the country names in the dropdown.
-  &__dial-code {
-    color: var(--iti-dialcode-color);
+  &__country-name {
+    // expand to fill available space, so the last flex item, the check mark, is pushed to the right edge
+    flex-grow: 1;
   }
+
+  //* Check icon shown on the right for the selected country.
+  &__country-check {
+    // align with clear icon which has padding:5px and right:4px, so is 9px from right edge
+    // here, the parent list item has padding:8px, so add 1px to make it 9px from right edge
+    margin: 0 1px 0 var(--iti-spacer-horizontal);
+    display: flex;
+    align-items: center;
+    color: var(--iti-icon-color);
+  }
+  &__country-check-svg {
+    width: var(--iti-search-clear-icon-height);
+    height: var(--iti-search-clear-icon-height);
+    display: block;
+  }
+
   &__country.iti__highlight {
     background-color: var(--iti-hover-color);
   }
 
-  //* Spacing between country flag, name and dial code.
-  &__country-list .iti__flag,
-  &__country-name {
+  //* Spacing between country flag and country name.
+  &__country-list .iti__flag {
     margin-right: var(--iti-spacer-horizontal);
 
     [dir="rtl"] & {
       margin-right: 0;
       margin-left: var(--iti-spacer-horizontal);
     }
+  }
+  &__country-list .iti__flag {
+    flex-shrink: 0; // stop long country names from shrinking the flag
   }
 
   &--allow-dropdown {
@@ -303,8 +327,6 @@
     left: -1000px;
     //* Higher than default Bootstrap modal z-index of 1050.
     z-index: 1060;
-    //* To keep styling consistent with .country-container.
-    padding: var(--iti-border-width);
     &:hover {
       cursor: pointer;
     }
@@ -343,8 +365,15 @@
     max-height: 100%;
     position: relative; //* Override needed in order to get full-width working properly.
   }
+  // give the search input the same v-padding as the country items, for visual consistency
+  .iti__country,
+  .iti__search-input {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
   .iti__country {
-    padding: 10px 10px;
+    padding-left: 10px;
+    padding-right: 10px;
     //* Increase line height because dropdown copy is v likely to overflow on mobile and when it does it needs to be well spaced.
     line-height: 1.5em;
   }
@@ -357,10 +386,40 @@
   width: var(--iti-flag-width);
   border-radius: 1px;
   box-shadow: 0px 0px 1px 0px #888;
-  background-image: var(--iti-path-flags-1x);
+  background-image: image-set(
+                  var(--iti-path-flags-1x) 1x,
+                  var(--iti-path-flags-2x) 2x
+  );
   background-repeat: no-repeat;
   background-position: var(--iti-flag-offset) 0;
   background-size: var(--iti-flag-sprite-width) var(--iti-flag-sprite-height);
+}
+
+//* Loading state (used while geoIpLookup is resolving auto country).
+.iti__loading {
+  position: relative;
+  background: none;
+  box-shadow: none;
+}
+
+.iti__loading::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: var(--iti-flag-height);
+  height: var(--iti-flag-height);
+  box-sizing: border-box;
+  border: 2px solid var(--iti-icon-color);
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: iti-spinner 1s linear infinite;
+}
+
+@keyframes iti-spinner {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @each $country-code, $values in $flags {
@@ -372,16 +431,26 @@
 }
 
 //* Empty state.
+// Inline globe icon (now rendered as SVG inside .iti__flag). Keep class for width/position logic and to clear box-shadow.
 .iti__globe {
-  background-image: var(--iti-path-globe-1x);
-  background-size: contain;
-  background-position: right;
+  background: none;
   box-shadow: none;
-  height: 19px;
+  height: var(--iti-globe-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0; // ensure svg centers
+
+  .iti__globe-svg {
+    width: 100%;
+    height: 100%;
+    fill: var(--iti-icon-color);
+  }
 }
 
-//* Media query for high PPI/Retina Displays.
-@media (min-resolution: 2x) {
-  .iti__flag { background-image: var(--iti-path-flags-2x); }
-  .iti__globe { background-image: var(--iti-path-globe-2x); }
+/* Browsers normally add a coloured outline when you focus an input. Chrome adds a blue outline WITHIN the input. If you focus the input and then hover the selected country, it's bg color square overlaps the focus outline and looks bad. Here, @supports is used to target Chrome only, and move the default outline out by 1px so there's no overlap. */
+@supports (-webkit-appearance:none) and (not (background: -webkit-canvas(foo))) {
+  .iti__tel-input:focus {
+    outline-offset: 1px;
+  }
 }
