@@ -1,4 +1,4 @@
-@import "metadata";
+@import  "metadata";
 
 :root {
   //* rgba is needed for the selected country hover state to blend in with the border-highlighting some browsers give the input on focus.
@@ -23,9 +23,7 @@
   --iti-triangle-border: calc(var(--iti-arrow-width) / 2);
   --iti-arrow-padding: 6px;
 
-  //* Image related variables.
-  --iti-path-flags-1x: url('intl-tel-input/flags.webp');
-  --iti-path-flags-2x: url('intl-tel-input/flags@2x.webp');
+  //* NOTE: image paths are now defined in intlTelInputWithAssets.scss
 
   --iti-flag-sprite-width: #{map-get($flags-sprite-1x, width)};
   --iti-flag-sprite-height: #{map-get($flags-sprite-1x, height)};
@@ -303,12 +301,21 @@
   }
 
   &--allow-dropdown {
-    //* Hover state - show country is clickable (unless the input is disabled or readonly)
-    .iti__country-container:not(:has(+ input[disabled])):not(:has(+ input[readonly])) {
+    //* If the adjacent input is disabled/readonly, ensure the country button doesn't look clickable.
+    .iti__country-container:has(+ input[disabled]),
+    .iti__country-container:has(+ input[readonly]) {
       button.iti__selected-country {
-        cursor: pointer;
+        cursor: not-allowed;
+
+        .iti__arrow {
+          visibility: hidden;
+        }
       }
-      //* Only show hover background colour when you hover (1) selected flag/arrow or (2) dropdown contents, but NOT when you hover the selected dial code, which would feel weird.
+    }
+
+    //* Only show hover background colour when you hover (1) selected flag/arrow or (2) dropdown contents, but NOT when you hover the selected dial code, which would feel weird.
+    //* Only apply when the input is NOT disabled/readonly.
+    .iti__country-container:not(:has(+ input[disabled])):not(:has(+ input[readonly])) {
       .iti__selected-country-primary:hover,
       .iti__selected-country:has(+ .iti__dropdown-content:hover) .iti__selected-country-primary {
         background-color: var(--iti-hover-color);
@@ -387,8 +394,8 @@
   border-radius: 1px;
   box-shadow: 0px 0px 1px 0px #888;
   background-image: image-set(
-                  var(--iti-path-flags-1x) 1x,
-                  var(--iti-path-flags-2x) 2x
+          var(--iti-path-flags-1x) 1x,
+          var(--iti-path-flags-2x) 2x
   );
   background-repeat: no-repeat;
   background-position: var(--iti-flag-offset) 0;

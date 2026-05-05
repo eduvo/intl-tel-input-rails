@@ -1,1 +1,7 @@
 @import "intl-tel-input/intl-tel-input";
+
+:root {
+  //* Image related variables.
+  --iti-path-flags-1x: url('intl-tel-input/flags.webp');
+  --iti-path-flags-2x: url('intl-tel-input/flags@2x.webp');
+}
